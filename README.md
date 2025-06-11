@@ -1,1 +1,1 @@
-# Diffusion-Monte-Carlo
+# Variational-Monte-Carlo
