@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath("/home/filippo/Github/Variational-Monte-Carlo/src/classes"))
+
 import numpy as np
 import unittest
 import Montecarlo as Mc
@@ -15,7 +20,7 @@ def local_en(x):
     return alpha**2 + (x**2) * (1 - alpha**4)
     
 
-mc = Mc.MonteCarlo(trial_state2, local_en)
+mc = Mc.MonteCarlov1(trial_state2)
 
 result = mc.integrate(local_en, 0, 10000, 10, 0.1)
 

@@ -3,8 +3,9 @@ import random as rd
 
 #class or function???
 
-class MonteCarlo:
-    def __init__(self, f, h):
+#first version of the class
+class MonteCarlov1:
+    def __init__(self, f):
         self.f = f  # importance sampling (maybe rename variables)
 
     def integrate(self, h, r, nMoves, nThermMoves, metroStep):
@@ -54,3 +55,56 @@ class MonteCarlo:
             accepted_r.append(r)
         
         return accepted_r
+    
+
+# Remake the class with a different apporach.
+# The importance sampling will be of the form f(par, x) where both par and x are arrays of parameters and variabbles respectively.
+# The method will be applied only to the variables.
+
+class MonteCarlov2:
+    accepted_points = []
+
+    def  __init__(self, f, par, r):
+        self.f = f
+        self.r = r
+        self.par = par
+
+    #  The generate method will add nMoves new valid generated points to the list of accepted_points
+    def generate(self, nMoves, nThermMoves, metroStep):
+        rd.seed()   # Initialize random generator
+        f_r  = self.f(self.par, self.r)
+
+        for i in range(nMoves):              #Loop of moves
+            for j in range(nThermMoves):     #Thermalization loop
+                trialStep = np.zeros[len(self.r)]
+                for k in len(self.r):
+                    trialStep[k] = self.r[k] + (rd.random() - 0.5) * metroStep[k]
+                new_f_r = self.f(self.par, trialStep)
+                if new_f_r > f_r:            #always accept when the new probability is higher 
+                    self.r = trialStep
+                    f_r = new_f_r
+                else:
+                    if rd.random() < new_f_r/f_r:   #if the new probability is lower than accept with probability new_probability/old_probability
+                        self.r = trialStep
+                        f_r = new_f_r
+            
+            self.accepted_points.append(self.r)
+        
+    def clear(self):
+        self.accepted_points.clear()
+
+    def setStartingPoint(self, r):
+        self.r = r
+    
+    # The evaluate work with functions h(x) where x is an array with equal size to the one in f(par, x).
+    def evaluate(self, *args):
+        SE = []
+        SE2 = []
+        for i in range(args):
+            for p in self.accepted_points:
+                SE[i] += args[i](p)
+                SE2[i] += args[i](p)**2
+        
+        N  = len(self.accepted_points)
+        sigma = np.sqrt((SE2/N) - (SE/N)**2)
+
