@@ -1,4 +1,6 @@
 import numpy as np
+from scipy.differentiate import jacobian
+import functools as ftools
 
 def S3_pot(r):
     return (1000 * np.exp(-3  *  r**2) - 163.5 * np.exp(-1.05  *  r**2) - 21.5 * np.exp(-0.6  *  r**2)
@@ -26,9 +28,16 @@ def  He_trial_function(par, x):
     r_24 = vector_distance(x[3:6], x[9:12])
     r_34 = vector_distance(x[6:9], x[9:12])
 
+    # The wavefunction is the given by multiplying all Jastrow factors.
     return (Jastrow_factor(par, r_12) * Jastrow_factor(par, r_13) * Jastrow_factor(par, r_14)
             * Jastrow_factor(par, r_23) * Jastrow_factor(par, r_24) * Jastrow_factor(par, r_34))
 
-# Define a method that acts on function like kinetic part of the Hamiltonian
-def Kinetic_op(target, par, x):
-    pass
+# Define a method that acts on function like kinetic part of the Hamiltonian.
+# the target function need to be of the form f(par, x).
+def Laplacian_op(target, param, x):
+    res = 0
+    jac = jacobian(ftools.partial(target, par = param), x)
+    for d in jac:
+        res += d**2
+
+    return res
