@@ -1,10 +1,5 @@
-import os
-import sys
+import numpy as np
 
-print(f'PYTHONPATH:')
-for string in os.environ.get('PYTHONPATH'):
-    print (string)
+point = np.zeros((1))
 
-print(f'sys.path:')
-for string in sys.path:
-    print(string)
+print(point.size)

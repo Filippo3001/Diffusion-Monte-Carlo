@@ -65,36 +65,36 @@ class MonteCarlov1:
 class MonteCarlov2:
     accepted_points = []
 
-    def  __init__(self, f, r):
+    def  __init__(self, f, startingPoint):
         self.f = f
-        self.r = r
+        self.point = startingPoint
 
     #  The generate method will add nMoves new valid generated points to the list of accepted_points
     def generate(self, nMoves, nThermMoves, metroStep):
         rd.seed()   # Initialize random generator
-        f_r  = self.f(self.r)
+        f_r  = self.f(self.point)
 
         for i in range(nMoves):              #Loop of moves
             for j in range(nThermMoves):     #Thermalization loop
-                trialStep = np.zeros[len(self.r)]
-                for k in len(self.r):
-                    trialStep[k] = self.r[k] + (rd.random() - 0.5) * metroStep[k]
+                trialStep = np.zeros(self.point.size)
+                for k in range(len(self.point)):
+                    trialStep[k] = self.point[k] + (rd.random() - 0.5) * metroStep[k]  #modify so that it works with both number variables or lists.
                 new_f_r = self.f(trialStep)
                 if new_f_r > f_r:            #always accept when the new probability is higher 
-                    self.r = trialStep
+                    self.point = trialStep
                     f_r = new_f_r
                 else:
                     if rd.random() < new_f_r/f_r:   #if the new probability is lower than accept with probability new_probability/old_probability
-                        self.r = trialStep
+                        self.point = trialStep
                         f_r = new_f_r
             
-            self.accepted_points.append(self.r)
+            self.accepted_points.append(self.point)
         
     def clear(self):
         self.accepted_points.clear()
 
-    def setStartingPoint(self, r):
-        self.r = r
+    def setStartingPoint(self, startingPoint):
+        self.point = startingPoint
     
     # The evaluate work with functions h(x) where x is an array with equal size to the one in f(par, x).
     def evaluate(self, *args):

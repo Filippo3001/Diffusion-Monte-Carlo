@@ -1,7 +1,7 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath("/home/filippo/Github/Variational-Monte-Carlo/src/classes"))
+sys.path.append(os.path.abspath("/home/filippo/Github/Varational-Monte-Carlo/src/classes"))
 
 import numpy as np
 import unittest
