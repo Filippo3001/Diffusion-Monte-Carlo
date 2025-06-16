@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath("/home/filippo/Github/Variational-Monte-Carlo/sr
 
 import numpy as np
 import unittest
-import Montecarlo as Mc
+from Montecarlo import MonteCarlov1
 # Use as trial function the function with alpha of 1D Harmonic oscillator
 
 alpha = 0.5
@@ -20,7 +20,7 @@ def local_en(x):
     return alpha**2 + (x**2) * (1 - alpha**4)
     
 
-mc = Mc.MonteCarlov1(trial_state2)
+mc = MonteCarlov1(trial_state2)
 
 result = mc.integrate(local_en, 0, 10000, 10, 0.1)
 

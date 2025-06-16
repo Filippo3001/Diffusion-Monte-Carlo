@@ -1,16 +1,15 @@
 import numpy as np
-from scipy.differentiate import hessian
-import functools as ftools
-
-#This is the non simpy version
+import sympy as smp
+import matplotlib as mpl
+import sympy.vector as vct
 
 def S3_pot(r):
-    return (1000 * np.exp(-3  *  r**2) - 163.5 * np.exp(-1.05  *  r**2) - 21.5 * np.exp(-0.6  *  r**2)
-             - 83 * np.exp(-0.8  *  r**2) - 11.5 * np.exp(-0.4  *  r**2))
+    return (1000 * smp.exp(-3  *  r**2) - 163.5 * smp.exp(-1.05  *  r**2) - 21.5 * smp.exp(-0.6  *  r**2)
+            - 83 * smp.exp(-0.8  *  r**2) - 11.5 * smp.exp(-0.4  *  r**2))
 
 # Define  the pair correlations g(r)
-def Jastrow_factor(par, r):
-    return np.exp(-par[0] * r**2) + par[1] * np.exp(- (par[2] + par[1]) * r**2)
+def Jastrow_factor(a, beta, gamma, r):
+    return smp.exp(-gamma * r**2) + a * smp.exp(- (beta + gamma) * r**2)
 
 
 def vector_distance(x, y):
@@ -18,7 +17,7 @@ def vector_distance(x, y):
     for j in len(x):
         d2 += (x[j] - y[j])**2
 
-    return np.sqrt(d2)
+    return smp.sqrt(d2)
 
 # Consider x = (r_1, r_2, r_3, r_4), where  every r_i is the position of the i-nth nucleon 
 def  He_trial_function(a, beta, gamma, r1, r2, r3, r4):
@@ -35,12 +34,9 @@ def  He_trial_function(a, beta, gamma, r1, r2, r3, r4):
             * Jastrow_factor(a, beta, gamma, abs(r_14)) * Jastrow_factor(a, beta, gamma, abs(r_23)) 
             * Jastrow_factor(a, beta, gamma, abs(r_24)) * Jastrow_factor(a, beta, gamma, abs(r_34)))
 
-# Define a method that acts on function like kinetic part of the Hamiltonian.
-# the target function need to be of the form f(par, x).
-def Laplacian_op(target, param, x):
-    res = 0
-    hess = hessian(ftools.partial(target, par = param), x)
-    for i in len(x):
-        res += hess[i][i]**2            #check if the implementation makes sense
 
-    return res
+a, beta, gamma, r = smp.symbols('a, beta, gamma, r')
+
+
+print(Jastrow_factor(a, beta, gamma, r))
+

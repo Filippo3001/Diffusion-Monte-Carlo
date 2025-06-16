@@ -58,28 +58,28 @@ class MonteCarlov1:
     
 
 # Remake the class with a different apporach.
-# The importance sampling will be of the form f(par, x) where both par and x are arrays of parameters and variabbles respectively.
+# The importance sampling will be of the form f(par, x) where both par and x are arrays of parameters and variables respectively.
 # The method will be applied only to the variables.
+# Will bee changed to work with f(*vectors), function of the form f(par, x) need to be wrapped with partial method
 
 class MonteCarlov2:
     accepted_points = []
 
-    def  __init__(self, f, par, r):
+    def  __init__(self, f, r):
         self.f = f
         self.r = r
-        self.par = par
 
     #  The generate method will add nMoves new valid generated points to the list of accepted_points
     def generate(self, nMoves, nThermMoves, metroStep):
         rd.seed()   # Initialize random generator
-        f_r  = self.f(self.par, self.r)
+        f_r  = self.f(self.r)
 
         for i in range(nMoves):              #Loop of moves
             for j in range(nThermMoves):     #Thermalization loop
                 trialStep = np.zeros[len(self.r)]
                 for k in len(self.r):
                     trialStep[k] = self.r[k] + (rd.random() - 0.5) * metroStep[k]
-                new_f_r = self.f(self.par, trialStep)
+                new_f_r = self.f(trialStep)
                 if new_f_r > f_r:            #always accept when the new probability is higher 
                     self.r = trialStep
                     f_r = new_f_r
