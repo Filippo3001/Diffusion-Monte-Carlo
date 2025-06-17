@@ -23,24 +23,30 @@ partial_imp_sampl = fct.partial(importance_sampl, mean = 2, sigma = 0.5)
 x_axis = np.linspace(0, 4, 1000)
 y_axis = partial_imp_sampl(x_axis)
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots()    
 
-ax.plot(x_axis, y_axis)
 
-plt.show()
+#plt.show()
 
 #Now generate a histogram to confront
 
 mc = Mc.MonteCarlov2(partial_imp_sampl, np.zeros(1))
 
-points = mc.generate(10000, 50, [0.1])
+mc.generate(10000, 50, 0.1)
 
-print(points)
+points = []
+
+for p in mc.accepted_points:
+    for q in p:
+        points.append(q[0])
+
+#print(points)
 
 n_bins  = 40
 
-#hist, ax2 = plt.subplots()
+hist, ax2 = plt.subplots()
 
-#ax2.hist(points, n_bins)
+ax.plot(x_axis, y_axis)
+ax2.hist(points, n_bins)
 
-#plt.show()
+plt.show()

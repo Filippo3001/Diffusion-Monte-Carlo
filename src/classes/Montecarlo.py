@@ -60,26 +60,29 @@ class MonteCarlov1:
 # Remake the class with a different apporach.
 # The importance sampling will be of the form f(par, x) where both par and x are arrays of parameters and variables respectively.
 # The method will be applied only to the variables.
-# Will bee changed to work with f(*vectors), function of the form f(par, x) need to be wrapped with partial method
+# Will bee changed to work with f(*vectors), function of the form f(*par, *vectors) need to be wrapped with partial method
 
 class MonteCarlov2:
     accepted_points = []
 
-    def  __init__(self, f, startingPoint):
+    def  __init__(self, f, *startingPoints):
         self.f = f
-        self.point = startingPoint
+        self.point = np.array(startingPoints) # transform the tuple into a ndarray
+        print(len(self.point))    #remove when sure it works
 
     #  The generate method will add nMoves new valid generated points to the list of accepted_points
     def generate(self, nMoves, nThermMoves, metroStep):
         rd.seed()   # Initialize random generator
-        f_r  = self.f(self.point)
+        rng = np.random.default_rng()
+        f_r  = self.f(*self.point)
 
         for i in range(nMoves):              #Loop of moves
             for j in range(nThermMoves):     #Thermalization loop
-                trialStep = np.zeros(self.point.size)
-                for k in range(len(self.point)):
-                    trialStep[k] = self.point[k] + (rd.random() - 0.5) * metroStep[k]  #modify so that it works with both number variables or lists.
-                new_f_r = self.f(trialStep)
+                #trialStep = np.zeros_like(self.point)
+                #for k in range(len(self.point)):
+                #    trialStep[k] = self.point[k] + (rd.random() - 0.5) * metroStep  #modify so that it works with both number variables or lists.
+                trialStep = self.point + (rng.random(self.point.shape) - 0.5) * metroStep
+                new_f_r = self.f(*trialStep)
                 if new_f_r > f_r:            #always accept when the new probability is higher 
                     self.point = trialStep
                     f_r = new_f_r
@@ -96,15 +99,19 @@ class MonteCarlov2:
     def setStartingPoint(self, startingPoint):
         self.point = startingPoint
     
-    # The evaluate work with functions h(x) where x is an array with equal size to the one in f(par, x).
+    # The evaluate work with functions h(*vectors), as in f(*par, *vectors).
     def evaluate(self, *args):
         SE = []
         SE2 = []
         for i in range(args):
-            for p in self.accepted_points:
-                SE[i] += args[i](p)
-                SE2[i] += args[i](p)**2
+            for p in self.accepted_points:     # p are arrays of vectors, transform them into tuples to be used as function arguments.
+                SE[i] += args[i](*p)
+                SE2[i] += args[i](*p)**2
         
         N  = len(self.accepted_points)
+        mean = SE / N
         sigma = np.sqrt((SE2/N) - (SE/N)**2)
+
+        return mean, sigma
+
 

@@ -2,6 +2,7 @@ import numpy as np
 from scipy.differentiate import hessian
 import functools as ftools
 import vector as vct
+import random as rd
 
 #This is the non simpy version, using vector
 
@@ -20,6 +21,7 @@ def vector_distance(x, y):
         d2 += (x[j] - y[j])**2
 
     return np.sqrt(d2)
+
 
 # Use for ri vector library 3d geometric vectors
 def  He_trial_function(a, beta, gamma, r1, r2, r3, r4):
