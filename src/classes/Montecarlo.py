@@ -64,16 +64,15 @@ class MonteCarlov1:
 class MonteCarlov2:
     accepted_points = []
 
-    def  __init__(self, f, *startingPoints):
+    def  __init__(self, f, startingPoint):
         self.f = f
-        self.point = np.array(startingPoints) # transform the tuple into a ndarray
-        print(len(self.point))    #remove when sure it works
+        self.point = startingPoint    # current point from which new points wil be generated
 
     #  The generate method will add nMoves new valid generated points to the list of accepted_points
     def generate(self, nMoves, nThermMoves, metroStep):
         rd.seed()   # Initialize random generator
         rng = np.random.default_rng()
-        f_r  = self.f(*self.point)
+        f_r  = self.f(self.point)
 
         for i in range(nMoves):              #Loop of moves
             for j in range(nThermMoves):     #Thermalization loop
@@ -81,7 +80,7 @@ class MonteCarlov2:
                 #for k in range(len(self.point)):
                 #    trialStep[k] = self.point[k] + (rd.random() - 0.5) * metroStep  #modify so that it works with both number variables or lists.
                 trialStep = self.point + (rng.random(self.point.shape) - 0.5) * metroStep
-                new_f_r = self.f(*trialStep)
+                new_f_r = self.f(trialStep)
                 if new_f_r > f_r:            #always accept when the new probability is higher 
                     self.point = trialStep
                     f_r = new_f_r
@@ -98,14 +97,14 @@ class MonteCarlov2:
     def setStartingPoint(self, startingPoint):
         self.point = startingPoint
     
-    # The evaluate work with functions h(*ndarray), as in f(*par, *ndarray).
+    # The evaluate work with functions h(ndarray), as in f(*par, ndarray).
     def evaluate(self, *args):
-        SE = [np.zeros(args)]
+        points_to_evaluate = np.array(self.accepted_points).transpose() # convert the list of points to a (m,...) numpy array
+        SE = np.zeros(args)
         SE2 = np.zeros(args)
         for i in range(args):
-            for p in self.accepted_points:     # p are arrays of arrays, unpack them to be used as function arguments.
-                SE[i] += args[i](*p)
-                SE2[i] += args[i](*p)**2
+            SE[i] = np.sum(args[i](points_to_evaluate))
+            SE2[i] = np.sum(args[i](points_to_evaluate)**2)
         
         N  = len(self.accepted_points)
         mean = SE / N
