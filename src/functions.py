@@ -50,8 +50,7 @@ def  He_trial_function(a, beta, gamma, r1, r2, r3, r4):
 # the target function need to be of the form f(x), where x is a numpy array
 def Laplacian_op(target, x):
     hess = hessian(target, x)
-    hessdiag = np.diagonal(hess.ddf)
-    res = np.sum(hessdiag)
+    res = np.trace(hess.ddf)
     return res
 
 
