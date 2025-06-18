@@ -24,7 +24,7 @@ def local_en(alpha, x):
     return Hamiltonian(fct.partial(trial_state, alpha = alpha), x) / trial_state(alpha, x)
 
 def local_en2(x):
-    return Hamiltonian(trial_state2, x) / trial_state(alpha, x)
+    return Hamiltonian(trial_state2, x) / trial_state2(x)
 
 def importance_sampling(alpha, x):
     return trial_state(alpha, x)**2
@@ -40,13 +40,22 @@ def results_an(alpha):
 
 alpha = 0.5
 
+#print(local_en2(np.array([0.])))
+
 x = np.linspace([-5], [5], 100)
-print(x)
-y = local_en2(x)
+#print(x)
+#y = local_en2(x)
+y = np.zeros_like(x)
+y_an = np.zeros_like(x)
+for i in range(len(x)):
+    y[i] = local_en2(x[i])
+    y_an[i] = local_en_an(alpha, x[i])
+
 print('test')
 
 fig, ax = plt.subplots()
 
 ax.plot(x, y)
+ax.plot(x, y_an)
 
 plt.show()

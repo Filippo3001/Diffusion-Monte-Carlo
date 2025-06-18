@@ -58,9 +58,8 @@ class MonteCarlov1:
     
 
 # Remake the class with a different apporach.
-# The importance sampling will be of the form f(par, x) where both par and x are arrays of parameters and variables respectively.
 # The method will be applied only to the variables.
-# Will bee changed to work with f(*vectors), function of the form f(*par, *vectors) need to be wrapped with partial method
+# it works with with f(*ndarray), function of the form f(*par, *ndarray) need to be wrapped with partial method
 
 class MonteCarlov2:
     accepted_points = []
@@ -99,12 +98,12 @@ class MonteCarlov2:
     def setStartingPoint(self, startingPoint):
         self.point = startingPoint
     
-    # The evaluate work with functions h(*vectors), as in f(*par, *vectors).
+    # The evaluate work with functions h(*ndarray), as in f(*par, *ndarray).
     def evaluate(self, *args):
-        SE = []
-        SE2 = []
+        SE = [np.zeros(args)]
+        SE2 = np.zeros(args)
         for i in range(args):
-            for p in self.accepted_points:     # p are arrays of vectors, transform them into tuples to be used as function arguments.
+            for p in self.accepted_points:     # p are arrays of arrays, unpack them to be used as function arguments.
                 SE[i] += args[i](*p)
                 SE2[i] += args[i](*p)**2
         
