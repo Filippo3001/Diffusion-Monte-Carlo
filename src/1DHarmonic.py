@@ -7,5 +7,5 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functools as fct
 from functions import Laplacian_op
-from Montecarlo import MonteCarlov2
+from Montecarlo import MonteCarlo
 

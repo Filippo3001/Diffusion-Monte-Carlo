@@ -6,4 +6,4 @@ sys.path.append(os.path.abspath("/home/filippo/Github/Varational-Monte-Carlo/src
 import numpy as np
 import matplotlib.pyplot as plt
 from functions import *
-from Montecarlo import MonteCarlov2
+from Montecarlo import MonteCarlo

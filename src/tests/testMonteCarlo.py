@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functools as fct
 from functions import *
-from Montecarlo import MonteCarlov2
+from Montecarlo import MonteCarlo
 
 alpha = 0.5
 
@@ -25,7 +25,7 @@ x = np.array([np.linspace(-5, 5, 100)])
 y = harm_importance_sampling(x, alpha)
 #y_an = local_en_an(alpha, x)
 
-mc = MonteCarlov2(fct.partial(harm_importance_sampling, alpha = alpha), np.array([2.]))
+mc = MonteCarlo(fct.partial(harm_importance_sampling, alpha = alpha), np.array([2.]))
 
 mc.generate(10000, 100, 0.2)
 

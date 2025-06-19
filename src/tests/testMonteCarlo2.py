@@ -30,7 +30,7 @@ fig, ax = plt.subplots()
 
 #Now generate a histogram to confront
 
-mc = Mc.MonteCarlov2(partial_imp_sampl, np.zeros(1))
+mc = Mc.MonteCarlo(partial_imp_sampl, np.zeros(1))
 
 mc.generate(10000, 50, 0.1)
 
