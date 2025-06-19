@@ -100,15 +100,15 @@ class MonteCarlov2:
     # The evaluate work with functions h(ndarray), as in f(*par, ndarray).
     def evaluate(self, *args):
         points_to_evaluate = np.array(self.accepted_points).transpose() # convert the list of points to a (m,...) numpy array
-        SE = np.zeros(args)
-        SE2 = np.zeros(args)
-        for i in range(args):
+        SE = np.zeros_like(args, dtype = float)
+        SE2 = np.zeros_like(args, dtype = float)
+        for i in range(len(SE)):
             SE[i] = np.sum(args[i](points_to_evaluate))
             SE2[i] = np.sum(args[i](points_to_evaluate)**2)
         
         N  = len(self.accepted_points)
         mean = SE / N
-        sigma = np.sqrt((SE2/N) - (SE/N)**2)
+        sigma = np.sqrt(((SE2/N) - (SE/N)**2) / N)
 
         return mean, sigma
 

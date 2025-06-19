@@ -1,5 +1,9 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath("/home/filippo/Github/Varational-Monte-Carlo/src/classes"))
+
 import numpy as np
-
-point = np.zeros((1))
-
-print(point.size)
+import matplotlib.pyplot as plt
+from functions import *
+from Montecarlo import MonteCarlov2

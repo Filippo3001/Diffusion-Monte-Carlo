@@ -3,7 +3,38 @@ from scipy.differentiate import hessian
 import functools as ftools
 import random as rd
 
-#This is the non simpy version, using vector
+
+# Define a method that acts on function like the Laplacian operator.
+# The target function need to be of the form f(x), where x is a numpy array
+def Laplacian_op(target, x):
+    hess = hessian(target, x)
+    res = np.trace(hess.ddf)
+    return res
+
+# We define all functions relative to the 1D Harmonic oscillator
+
+def harm_trial_state(x, alpha):
+    return (np.sqrt(abs(alpha))  /  np.pow(np.pi, 1/4)) * np.exp(- 0.5 * alpha**2 * x**2)
+
+def harm_Hamiltonian(f, x):
+    return - Laplacian_op(f, x) + x**2 * f(x)
+
+def local_en(x, alpha):
+    return harm_Hamiltonian(ftools.partial(harm_trial_state, alpha = alpha), x) / harm_trial_state(x, alpha)
+
+def harm_importance_sampling(x, alpha):
+    return harm_trial_state(x, alpha)**2
+
+# We now define the analytical result for the Harmonic oscillator
+
+def harm_local_en_an(x, alpha):
+    return alpha**2 + x**2 * (1 - alpha**4)
+
+def harm_results_an(alpha):
+    mean = 0.5 * (alpha**2 + 1 /  alpha**2)
+    var = (alpha**4 - 1)**2 / (2 * alpha**4)
+
+# We define all functions relative to the Helium nucleus
 
 def S3_pot(r):
     return (1000 * np.exp(-3  *  r**2) - 163.5 * np.exp(-1.05  *  r**2) - 21.5 * np.exp(-0.6  *  r**2)
@@ -45,14 +76,7 @@ def  He_trial_function(a, beta, gamma, r1, r2, r3, r4):
     return ( Jastrow_factor(a, beta, gamma, vector_module(r_12)) * Jastrow_factor(a, beta, gamma, vector_module(r_13)) 
            * Jastrow_factor(a, beta, gamma, vector_module(r_14)) * Jastrow_factor(a, beta, gamma, vector_module(r_23)) 
            * Jastrow_factor(a, beta, gamma, vector_module(r_24)) * Jastrow_factor(a, beta, gamma, vector_module(r_34)))
-
-# Define a method that acts on function like kinetic part of the Hamiltonian.
-# the target function need to be of the form f(x), where x is a numpy array
-def Laplacian_op(target, x):
-    hess = hessian(target, x)
-    res = np.trace(hess.ddf)
-    return res
-
+           
 
 def He_Hamiltonian(target, r1, r2, r3, r4):
     kin_part = ( Laplacian_op(ftools.partial(target, r2 = r2, r3 = r3, r4 = r4), r1) + Laplacian_op(ftools.partial(target, r1 = r1, r3 = r3, r4 = r4), r2)
